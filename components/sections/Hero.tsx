@@ -41,7 +41,7 @@ export default function Hero() {
             <p className="text-base sm:text-lg md:text-body-lg text-text-primary mb-8 max-w-xl">
               Profesjonalna agencja ubezpieczeniowa obsługująca Wrocław i okolice. 
               Wyślij zapytanie a my odezwiemy się w ciągu 24 godzin z idealnie dopasowaną ofertą 
-              spośród 35+ towarzystw ubezpieczeniowych. Darmowo i bez zobowiązań.
+              spośród 35+ towarzystw ubezpieczeniowych.
             </p>
 
             <div className="grid sm:grid-cols-3 gap-6 mb-8">
