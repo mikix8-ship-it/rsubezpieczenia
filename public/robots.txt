@@ -1,0 +1,13 @@
+# robots.txt dla RS Ubezpieczenia
+# https://rsubezpieczenia.pl
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/static/
+
+# Sitemap
+Sitemap: https://rsubezpieczenia.pl/sitemap.xml
+
+# Crawl-delay (opcjonalne, dla grzecznych botów)
+Crawl-delay: 1
