@@ -1,9 +1,7 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { Calendar, ExternalLink, Loader2 } from "lucide-react";
+import { Calendar, ExternalLink } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
+import { headers } from "next/headers";
 
 interface Article {
   id: string;
@@ -15,51 +13,54 @@ interface Article {
   source: string;
 }
 
-export default function PoradyPage() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+// Odświeżanie ISR co 6 godzin
+export const revalidate = 21600;
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
+function formatDate(isoDate: string) {
+  const date = new Date(isoDate);
+  return date.toLocaleDateString("pl-PL", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
-  const fetchArticles = async () => {
-    try {
-      const response = await fetch('/api/articles');
-      const data = await response.json();
-      if (data.success) {
-        setArticles(data.articles);
-      }
-    } catch (error) {
-      console.error('Błąd pobierania artykułów:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+async function getArticles() {
+  // Budujemy absolutny URL pod aktualny host (działa na prod i preview)
+  const h = headers();
+  const host = h.get("host");
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  const baseUrl = `${proto}://${host}`;
 
-  const formatDate = (isoDate: string) => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+  const res = await fetch(`${baseUrl}/api/articles`, {
+    // Ważne: używamy cache Next.js + ISR z revalidate, nie cache przeglądarki
+    next: { revalidate: 21600 },
+  });
+
+  if (!res.ok) return { success: false, articles: [] as Article[] };
+
+  return (await res.json()) as { success: boolean; articles: Article[] };
+}
+
+export default async function PoradyPage() {
+  const data = await getArticles();
+  const articles = data.success ? data.articles : [];
 
   return (
     <div className="pt-20">
       <section className="section-padding relative overflow-hidden">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 z-0 bg-center bg-no-repeat bg-cover"
           style={{
-            backgroundImage: 'url(/images/hero/porady.jpg)',
-            backgroundAttachment: 'fixed',
+            backgroundImage: "url(/images/hero/porady.jpg)",
+            // jeśli chcesz też poprawić „przycięcie” na mobile:
+            // backgroundAttachment: "scroll",
           }}
         />
         {/* Overlay for readability */}
         <div className="absolute inset-0 bg-background/50 z-0" />
-        
+
         <div className="container-custom text-center relative z-10">
           <Badge className="mb-6">Blog</Badge>
           <h1 className="text-3xl sm:text-4xl md:text-display-lg font-bold text-text-primary mb-6">
@@ -73,22 +74,11 @@ export default function PoradyPage() {
 
       <section className="section-padding bg-surface">
         <div className="container-custom">
-          {loading ? (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-8 h-8 text-accent animate-spin" />
-              <span className="ml-3 text-text-secondary">Ładowanie artykułów...</span>
-            </div>
-          ) : articles.length === 0 ? (
+          {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-text-secondary mb-4">
-                Nie udało się pobrać artykułów. Sprawdź połączenie z internetem.
+                Nie udało się pobrać artykułów. Spróbuj ponownie za chwilę.
               </p>
-              <button
-                onClick={fetchArticles}
-                className="text-accent hover:underline"
-              >
-                Spróbuj ponownie
-              </button>
             </div>
           ) : (
             <>
@@ -133,25 +123,9 @@ export default function PoradyPage() {
               </div>
 
               <div className="mt-12 text-center">
-                <p className="text-text-secondary mb-4">
-                  Artykuły są automatycznie aktualizowane co 6 godzin
+                <p className="text-text-secondary mb-2">
+                  Artykuły są automatycznie aktualizowane co 6 godzin.
                 </p>
-                <button
-                  onClick={() => {
-                    setLoading(true);
-                    fetch('/api/articles?refresh=true')
-                      .then(res => res.json())
-                      .then(data => {
-                        if (data.success) {
-                          setArticles(data.articles);
-                        }
-                      })
-                      .finally(() => setLoading(false));
-                  }}
-                  className="text-accent hover:underline text-sm"
-                >
-                  Odśwież teraz
-                </button>
               </div>
             </>
           )}
