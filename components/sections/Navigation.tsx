@@ -94,7 +94,7 @@ export default function Navigation() {
                   role="menu"
                     style={{
                     position: 'fixed',
-                    top: '60px',
+                    top: '40px',
                     left: `${dropdownLeft}px`,
                   }}
                   className="absolute top-full left-0 mt-2 w-64 glass rounded-lg shadow-xl py-2"
