@@ -73,44 +73,46 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
             <div
-              className="relative"
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
-            >
-              <button
-                type="button"
-                aria-haspopup="menu"
-                aria-expanded={showDropdown}
-                aria-controls={dropdownId}
-                className="flex items-center gap-1 font-semibold text-text-primary hover:text-accent transition-colors"
-              >
-                Ubezpieczenia
-                <ChevronDown className="w-4 h-4" />
-              </button>
+              <div
+  className="relative"
+  onMouseEnter={() => setShowDropdown(true)}
+  onMouseLeave={() => setShowDropdown(false)}
+>
+  <button
+    type="button"
+    aria-haspopup="menu"
+    aria-expanded={showDropdown}
+    aria-controls={dropdownId}
+    className="flex items-center gap-1 font-semibold text-text-primary hover:text-accent transition-colors"
+  >
+    Ubezpieczenia
+    <ChevronDown className="w-4 h-4" />
+  </button>
 
-              {showDropdown && (
-              <>
-              {/* Hover bridge: usuwa "dziurę" między buttonem a dropdownem */}
-              <div className="absolute left-0 top-full h-2 w-full" />
-                
-                <div
-                  id={dropdownId}
-                  role="menu"
-                  className="absolute top-full left-0 mt-1 w-64 glass rounded-lg shadow-xl py-2"
-                >
-                  {insuranceCategories.map((category) => (
-                    <Link
-                      key={category.href}
-                      href={category.href}
-                      role="menuitem"
-                      className="block px-4 py-2 text-text-primary hover:bg-background hover:text-accent transition-colors"
-                    >
-                      {category.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+  {showDropdown && (
+    <>
+      {/* Hover bridge: usuwa "dziurę" między buttonem a dropdownem */}
+      <div className="absolute left-0 top-full h-2 w-full" />
+
+      <div
+        id={dropdownId}
+        role="menu"
+        className="absolute top-full left-0 mt-1 w-64 glass rounded-lg shadow-xl py-2"
+      >
+        {insuranceCategories.map((category) => (
+          <Link
+            key={category.href}
+            href={category.href}
+            role="menuitem"
+            className="block px-4 py-2 text-text-primary hover:bg-background hover:text-accent transition-colors"
+          >
+            {category.label}
+          </Link>
+        ))}
+      </div>
+    </>
+  )}
+</div>
 
             <Link
               href="/o-nas"
