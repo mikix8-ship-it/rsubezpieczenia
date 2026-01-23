@@ -92,7 +92,7 @@ export default function Navigation() {
                 <div
                   id={dropdownId}
                   role="menu"
-                  className="absolute top-full left-0 mt-2 w-64 glass rounded-lg shadow-xl py-2"
+                  className="absolute top-full left-0 mt-1 w-64 glass rounded-lg shadow-xl py-2"
                 >
                   {insuranceCategories.map((category) => (
                     <Link
