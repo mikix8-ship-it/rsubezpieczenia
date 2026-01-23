@@ -94,7 +94,6 @@ export default function Navigation() {
       {/* Hover bridge: usuwa "dziurę" między buttonem a dropdownem */}
       <div className="absolute left-0 top-full h-2 w-full" />
 
-      <div
         id={dropdownId}
         role="menu"
         className="absolute top-full left-0 mt-1 w-64 glass rounded-lg shadow-xl py-2"
